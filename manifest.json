@@ -1,0 +1,22 @@
+{
+  "name": "T.I.P. QC Library eBundy",
+  "short_name": "eBundy",
+  "description": "Web-based offline attendance recording system for TIP QC Library",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#111111",
+  "theme_color": "#f1b82d",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

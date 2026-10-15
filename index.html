@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Technological Institute of the Philippines - Bundy</title>
+  
+  <!-- PWA Metadata links -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#f1b82d">
+  <link rel="apple-touch-icon" href="icon-192.png">
+
+  <style>
+    :root {
+      --tip-yellow: #f1b82d;
+      --tip-black: #111111;
+      --tip-dark-gray: #222222;
+      --tip-light-gray: #f4f4f4;
+    }
+    
+    * {
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--tip-light-gray);
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .main-header {
+      width: 100%;
+      background-color: var(--tip-black);
+      border-bottom: 5px solid var(--tip-yellow);
+      padding: 15px 20px;
+    }
+
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      max-width: 2000px;
+      margin: 0 auto;
+    }
+
+    .logo-container { 
+      display: flex;
+      align-items: center;
+    }
+
+    .tip-logo { 
+      height: 40px;
+      width: auto;
+      object-fit: contain;
+    }
+
+    .library-title { 
+      border-left: 2px solid var(--tip-yellow);
+      margin-left: 15px;
+      padding-left: 15px;
+      font-weight: 600;
+      color: white;
+      font-size: 1.1rem;
+    }
+
+    .status-bar {
+      width: 100%;
+      max-width: 500px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 15px;
+      margin-top: 15px;
+      font-size: 0.85rem;
+      font-weight: bold;
+    }
+
+    .status-indicator {
+      padding: 4px 10px;
+      border-radius: 0px;
+      color: white;
+    }
+
+    .online { background-color: #28a745; }
+    .offline { background-color: #dc3545; }
+
+    .pc-badge {
+      font-size: 0.8rem;
+      color: #555;
+      background: #e2e2e2;
+      padding: 2px 8px;
+      border-radius: 3px;
+    }
+
+    .main-wrapper {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      width: 90%;
+      max-width: 500px;
+      margin-top: 10px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 500px;
+      background: white;
+      border-radius: 0px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      border: 1px solid #ddd;
+      overflow: hidden;
+    }
+
+    .side-alert {
+      position: absolute;
+      left: calc(100% + 20px);
+      top: 0;
+      width: 300px;
+      background-color: #fff3cd;
+      border: 2px solid #ffebaa;
+      border-left: 0px solid #ffc107;
+      border-radius: 0px;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      display: none;
+      animation: fadeIn 0.2s ease-in-out;
+      z-index: 100;
+    }
+
+    .side-alert h3 {
+      color: #856404;
+      font-size: 1.05rem;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .side-alert p {
+      color: #856404;
+      font-size: 0.95rem;
+      line-height: 1.4;
+      font-weight: 600;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .clock-card {
+      background: var(--tip-black);
+      color: white;
+      text-align: center;
+      padding: 20px;
+      border-bottom: 3px solid var(--tip-yellow);
+    }
+
+    .clock-card .date {
+      font-size: 1rem;
+      color: #ccc;
+    }
+
+    .clock-card .time {
+      font-size: 2.2rem;
+      font-weight: bold;
+      color: var(--tip-yellow);
+      margin: 5px 0;
+    }
+
+    .form-group {
+      padding: 20px;
+    }
+
+    .field-box {
+      margin-bottom: 15px;
+    }
+
+    .field-box label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #555;
+      text-transform: none;
+      margin-bottom: 5px;
+    }
+
+    .field-box input {
+      width: 100%;
+      padding: 12px;
+      font-size: 1rem;
+      border: 2px solid #ccc;
+      border-radius: 0px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .field-box input#studentNumber {
+      border-color: var(--tip-black);
+      background-color: #fff;
+    }
+
+    .field-box input#studentNumber:focus {
+      border-color: var(--tip-yellow);
+      box-shadow: 0 0 5px rgba(241, 184, 45, 0.8);
+    }
+
+    .field-box input[readonly] {
+      background-color: #e9ecef;
+      color: #495057;
+      cursor: not-allowed;
+      border-color: #ced4da;
+    }
+
+    .action-badge-box {
+      font-weight: bold;
+      font-size: 1.1rem;
+      text-align: center;
+      letter-spacing: 1px;
+    }
+
+    .action-login {
+      background-color: #d4edda !important;
+      color: #155724 !important;
+      border-color: #c3e6cb !important;
+    }
+
+    .action-logout {
+      background-color: #f8d7da !important;
+      color: #721c24 !important;
+      border-color: #f5c6cb !important;
+    }
+
+    .message-area {
+      padding: 10px 20px 20px 20px;
+      text-align: center;
+      font-weight: bold;
+      min-height: 45px;
+    }
+
+    .msg-success { color: #28a745; }
+    .msg-error { color: #dc3545; }
+    .msg-info { color: #17a2b8; }
+
+    @media (max-width: 900px) {
+      .side-alert {
+        position: static;
+        width: 100%;
+        margin-top: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="main-header">
+    <div class="top-bar">
+      <div class="logo-container">
+        <a href="https://library.tip.edu.ph">
+          <img src="https://library.tip.edu.ph/cgi-bin/koha/opac-retrieve-file.pl?id=c22e1d744ad5b31b41b4e01f81bce199" alt="Logo" class="tip-logo" />
+        </a>
+        <span class="library-title">eBundy</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="status-bar">
+    <span id="connectionStatus" class="status-indicator online">ONLINE</span>
+    <span id="pcBadge" class="pc-badge">PC: Pending</span>
+    <span id="offlineCount">Pending: 0</span>
+  </div>
+
+  <div class="main-wrapper">
+    <div class="container">
+      <div class="clock-card">
+        <div class="date" id="liveDate">---</div>
+        <div class="time" id="liveTime">00:00:00 AM</div>
+        <div style="font-size: 0.9rem; margin-top: 5px; color: var(--tip-yellow);" id="greeting">Have a nice day!</div>
+      </div>
+
+      <div class="form-group">
+        <div class="field-box">
+          <label for="studentNumber">Student Number (Press Enter to Submit)</label>
+          <input type="text" id="studentNumber" placeholder="Tap or enter Student ID..." autofocus autocomplete="off">
+        </div>
+
+        <div class="field-box">
+          <label for="timestamp">Timestamp</label>
+          <input type="text" id="timestamp" readonly placeholder="...">
+        </div>
+
+        <div class="field-box">
+          <label for="fullName">Full Name</label>
+          <input type="text" id="fullName" readonly placeholder="...">
+        </div>
+
+        <div class="field-box">
+          <label for="program">Course/Program/Strand</label>
+          <input type="text" id="program" readonly placeholder="...">
+        </div>
+
+        <div class="field-box">
+          <label for="actionStatus">Action / Log Status</label>
+          <input type="text" id="actionStatus" class="action-badge-box" readonly placeholder="...">
+        </div>
+      </div>
+
+      <div class="message-area" id="message"></div>
+    </div>
+
+    <div class="side-alert" id="notFoundAlert">
+      <h3>⚠️ Notice</h3>
+      <p>Learner's record is not found. Please contact the library to settle this.</p>
+    </div>
+  </div>
+
+  <script>
+    // REPLACE THIS WITH YOUR DEPLOYED GOOGLE WEB APP EXECUTION URL
+    const API_URL = "https://script.google.com/macros/s/AKfycbyNdqJ5T-U1zf33sK-GZlSUaVSrOEhr1Ob5Gp_cxLR94_rUQYAxFtmW6mUdVfl7YjdwEA/exec";
+
+    // Register PWA Service Worker
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./sw.js')
+        .then(() => console.log('Service Worker Registered'))
+        .catch((err) => console.error('Service Worker Registration Failed', err));
+    }
+
+    function getDeviceCode() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const allowedCodes = ['QCLIB-B8', 'QCLIB-B1', 'QCLIB-B9'];
+      const val = urlParams.get('pc') ? urlParams.get('pc').trim() : '';
+      return allowedCodes.includes(val) ? val : 'Pending';
+    }
+
+    function displayPCLabel() {
+      document.getElementById('pcBadge').innerText = `PC: ${getDeviceCode()}`;
+    }
+
+    function updateClock() {
+      const now = new Date();
+      const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      document.getElementById('liveDate').innerText = now.toLocaleDateString('en-US', dateOptions);
+      document.getElementById('liveTime').innerText = now.toLocaleTimeString('en-US');
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    async function callApi(payload) {
+      const response = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload)
+      });
+      return await response.json();
+    }
+
+    async function cacheStudents() {
+      if (navigator.onLine && API_URL !== "https://script.google.com/macros/s/AKfycbyNdqJ5T-U1zf33sK-GZlSUaVSrOEhr1Ob5Gp_cxLR94_rUQYAxFtmW6mUdVfl7YjdwEA/exec") {
+        try {
+          const res = await callApi({ action: 'getAllStudents' });
+          if (res.success) {
+            localStorage.setItem('cachedStudents', JSON.stringify(res.students));
+          }
+        } catch (e) {
+          console.warn("Could not cache student list.", e);
+        }
+      }
+    }
+
+    function updateNetworkStatus() {
+      const status = document.getElementById('connectionStatus');
+      const offlineQueue = JSON.parse(localStorage.getItem('offlineAttendance')) || [];
+      document.getElementById('offlineCount').innerText = `Pending: ${offlineQueue.length}`;
+
+      if (navigator.onLine) {
+        status.innerText = 'ONLINE';
+        status.className = 'status-indicator online';
+        cacheStudents();
+        if (offlineQueue.length > 0) {
+          syncOfflineData();
+        }
+      } else {
+        status.innerText = 'OFFLINE';
+        status.className = 'status-indicator offline';
+      }
+      displayPCLabel();
+    }
+    window.addEventListener('online', updateNetworkStatus);
+    window.addEventListener('offline', updateNetworkStatus);
+    updateNetworkStatus();
+
+    const studentInput = document.getElementById('studentNumber');
+    const alertBox = document.getElementById('notFoundAlert');
+
+    studentInput.addEventListener('input', function(e) {
+      this.value = this.value.replace(/[^0-9]/g, '');
+      hideSideAlert();
+    });
+
+    studentInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        processAttendance();
+      }
+    });
+
+    async function processAttendance() {
+      const inputId = studentInput.value.trim();
+      const msgDiv = document.getElementById('message');
+
+      if (!inputId) {
+        msgDiv.innerText = "Please enter a Student Number.";
+        msgDiv.className = "message-area msg-error";
+        return;
+      }
+
+      msgDiv.innerText = "Searching...";
+      msgDiv.className = "message-area msg-info";
+      hideSideAlert();
+
+      const currentTimestamp = new Date().toLocaleString();
+      const currentDevice = getDeviceCode();
+
+      setTimeout(async function() {
+        if (navigator.onLine) {
+          try {
+            const res = await callApi({
+              action: 'getStudentDetails',
+              studentNumber: inputId
+            });
+
+            if (res.success) {
+              populateFields(currentTimestamp, res.fullName, res.program);
+              saveRecordToServer({
+                timestamp: currentTimestamp,
+                studentNumber: res.studentNumber,
+                fullName: res.fullName,
+                program: res.program,
+                deviceCode: currentDevice
+              });
+            } else {
+              msgDiv.innerText = res.message;
+              msgDiv.className = "message-area msg-error";
+              showSideAlert();
+            }
+          } catch (err) {
+            msgDiv.innerText = "Error connecting to server. Processing offline...";
+            msgDiv.className = "message-area msg-error";
+            processOfflineRecord(currentTimestamp, inputId, currentDevice);
+          }
+        } else {
+          processOfflineRecord(currentTimestamp, inputId, currentDevice);
+        }
+      }, 1000);
+    }
+
+    function processOfflineRecord(timestamp, inputId, deviceCode) {
+      const msgDiv = document.getElementById('message');
+      const cachedStudents = JSON.parse(localStorage.getItem('cachedStudents')) || [];
+      const match = cachedStudents.find(s => s.studentNumber === inputId);
+
+      if (match) {
+        const offlineQueue = JSON.parse(localStorage.getItem('offlineAttendance')) || [];
+        const lastRec = offlineQueue.slice().reverse().find(r => r.studentNumber === inputId);
+        const action = (lastRec && lastRec.action === "Login") ? "Logout" : "Login";
+
+        populateFields(timestamp, match.fullName, match.program);
+        setActionBadge(action);
+
+        saveOfflineRecord({
+          timestamp: timestamp,
+          studentNumber: match.studentNumber,
+          fullName: match.fullName,
+          program: match.program,
+          deviceCode: deviceCode,
+          action: action
+        });
+      } else {
+        msgDiv.innerText = "Student Number not found.";
+        msgDiv.className = "message-area msg-error";
+        showSideAlert();
+      }
+    }
+
+    function populateFields(time, name, prog) {
+      document.getElementById('timestamp').value = time;
+      document.getElementById('fullName').value = name;
+      document.getElementById('program').value = prog;
+    }
+
+    function setActionBadge(action) {
+      const field = document.getElementById('actionStatus');
+      field.value = action.toUpperCase();
+      if (action === "Login") {
+        field.className = "action-badge-box action-login";
+      } else {
+        field.className = "action-badge-box action-logout";
+      }
+    }
+
+    async function saveRecordToServer(record) {
+      try {
+        const res = await callApi({
+          action: 'recordAttendance',
+          record: record
+        });
+        if (res.success) {
+          setActionBadge(res.action);
+          const msgDiv = document.getElementById('message');
+          msgDiv.innerText = `Attendance (${res.action}) recorded successfully!`;
+          msgDiv.className = "message-area msg-success";
+          resetAllFields();
+        }
+      } catch (err) {
+        saveOfflineRecord(record);
+      }
+    }
+
+    function saveOfflineRecord(record) {
+      const offlineQueue = JSON.parse(localStorage.getItem('offlineAttendance')) || [];
+      offlineQueue.push(record);
+      localStorage.setItem('offlineAttendance', JSON.stringify(offlineQueue));
+
+      const msgDiv = document.getElementById('message');
+      msgDiv.innerText = `Recorded locally (${record.action})! Will sync when online.`;
+      msgDiv.className = "message-area msg-error";
+
+      updateNetworkStatus();
+      resetAllFields();
+    }
+
+    async function syncOfflineData() {
+      const offlineQueue = JSON.parse(localStorage.getItem('offlineAttendance')) || [];
+      if (offlineQueue.length === 0) return;
+
+      try {
+        const res = await callApi({
+          action: 'syncOfflineRecords',
+          records: offlineQueue
+        });
+
+        if (res.success) {
+          localStorage.removeItem('offlineAttendance');
+          updateNetworkStatus();
+          const msgDiv = document.getElementById('message');
+          msgDiv.innerText = `Successfully synced ${res.count} offline record(s)!`;
+          msgDiv.className = "message-area msg-success";
+        }
+      } catch (err) {
+        console.warn("Failed to sync offline records", err);
+      }
+    }
+
+    function resetAllFields() {
+      setTimeout(() => {
+        studentInput.value = '';
+        document.getElementById('timestamp').value = '';
+        document.getElementById('fullName').value = '';
+        document.getElementById('program').value = '';
+        
+        const actField = document.getElementById('actionStatus');
+        actField.value = '';
+        actField.className = 'action-badge-box';
+
+        document.getElementById('message').innerText = '';
+        studentInput.focus();
+      }, 500);
+    }
+
+    function showSideAlert() {
+      alertBox.style.display = 'block';
+    }
+
+    function hideSideAlert() {
+      alertBox.style.display = 'none';
+    }
+  </script>
+</body>
+</html>
